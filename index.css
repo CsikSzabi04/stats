@@ -154,6 +154,8 @@ footer {
     scroll-snap-type: none;
 }
 
+.modal::-webkit-scrollbar{display: none;}
+
 .modal.show {
     opacity: 1;
     pointer-events: auto;
