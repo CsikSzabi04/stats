@@ -1,5 +1,6 @@
 const API_URL = "https://api.rawg.io/api/games";
 const API_KEY = "984255fceb114b05b5e746dc24a8520a";
+
 let allGames = [];
 const multiplayerCarousel = document.getElementById("multiplayer-carousel");
 const actionCarousel = document.getElementById("action-carousel");
@@ -119,6 +120,14 @@ async function showGameDetails(game) {
     const modal = document.getElementById("game-modal");
     const modalDetails = document.getElementById("modal-details");
     modal.classList.add("show");
+
+    const requirements = game.platforms && game.platforms.length > 0 
+        ? game.platforms.map(platform => {
+            const requirements = platform.requirements_en || {};
+            return requirements.minimum ? `<li>${platform.platform.name}: ${requirements.minimum}</li>` : null;
+          }).filter(Boolean).join("")
+        : "<li>N/A</li>";
+
     modalDetails.innerHTML = ` 
         <img src="${game.background_image}" alt="${game.name}" class="rounded-lg mb-4 w-full object-cover">
         <h2 class="text-3xl font-bold mb-4">${game.name}</h2>
@@ -126,8 +135,28 @@ async function showGameDetails(game) {
         <p><strong>Rating:</strong> ${game.rating || "N/A"}/5</p>
         <p><strong>Stores:</strong> ${game.stores ? game.stores.map(store => store.store.name).join(", ") : "N/A"}</p>
         <p><strong>Platforms:</strong> ${game.platforms ? game.platforms.map(p => p.platform.name).join(", ") : "N/A"}</p>
-        <p><strong>Genres:</strong> ${game.genres ? game.genres.map(g => g.name).join(", ") : "N/A"}</p>
-    `;
+        <div class="row"> <p><strong>Genres:</strong> <div id="tag"> ${game.tags ? game.tags.map(g => g.name).join(", ") : "N/A"}</div></p></div>
+          <div class="collapsible">
+          <div class="collapsible-header" onclick="toggleRequirements(this)">
+            <strong>Minimum Requirements</strong> <span class="arrow">&#x25BC;</span>
+          </div>
+          <ul class="collapsible-content hidden scrollable-requirements">
+            ${requirements}
+          </ul>
+        </div>
+        `;
+}
+
+function toggleRequirements(header) {
+    const content = header.nextElementSibling;
+    const arrow = header.querySelector('.arrow');
+    if (content.classList.contains("hidden")) {
+        content.classList.remove("hidden");
+        arrow.innerHTML = "&#x25B2;"; // Up arrow
+    } else {
+        content.classList.add("hidden");
+        arrow.innerHTML = "&#x25BC;"; // Down arrow
+    }
 }
 
 function closeModal() {
@@ -148,6 +177,7 @@ function handleSearch() {
         game.name.toLowerCase().includes(searchQuery)
     );
     displayFeaturedGames(filteredGames); 
+
 }
 document.getElementById("search-input").addEventListener("input", handleSearch);
 
@@ -160,11 +190,12 @@ if (query.length > 2) {
     if (!response.ok) throw new Error("Failed to fetch search results");
 
     const data = await response.json();
-    displayGames(data.results);
+    allGames = data.results;
+    displayFeaturedGames(allGames); 
     } catch (error) {
     console.error("Error searching games:", error);
     }
-} else if (query === "") {
+} else if (query == "") {
     fetchFeaturedGames();
 }
 });
