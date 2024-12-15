@@ -11,40 +11,72 @@
 </head>
 
 <body class="bg-gray-900 text-white font-sans">
-    <header class="p-4 bg-gray-800 flex justify-between items-center">
-        <h1 class="text-3xl font-bold" onclick="Refresh()">Game Explorer</h1>
-        <input id="search-input" class="p-2 rounded-lg text-black w-64" type="text" placeholder="Search games...">
+    <!-- Header -->
+    <header class="p-4 bg-gray-800 flex justify-between items-center flex-wrap">
+        <h1 class="text-3xl font-bold cursor-pointer" onclick="Refresh()">Game Explorer</h1>
+        
+        <div class="flex items-center space-x-4 mt-2 sm:mt-0">
+            
+            <button id="toggle-wishlist" class="bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 hover:from-blue-700 hover:via-blue-600 hover:to-blue-700 text-white font-semibold py-2 px-4 rounded-md shadow-lg hover:shadow-xl transition duration-300 ease-in-out">
+                Your Favourites
+            </button>
+
+            <input id="search-input" class="p-2 rounded-lg text-black w-full sm:w-64" type="text" placeholder="Search games...">
+
+        </div>
     </header>
 
     <div class="main-content">
         <div class="container mx-auto p-4">
-            <!-- Featured -->
+
+            <!-- Wishlist  -->
+            <div id="wishlist-modal" class="wishlist-modal hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+                <div class="wishlist-content bg-gray-900 p-6 rounded-lg max-w-md w-full">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-xl font-bold">Your Wishlist</h2>
+                        <button id="close-wishlist" class="text-red-500 font-bold text-xl">&times;</button>
+                    </div>
+                    <div id="wishlist" class="mt-4 max-h-60 overflow-y-auto">
+                        <!-- Wishlist items -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Featured Games -->
             <section id="featured-games" class="mb-8">
                 <h2 class="text-2xl font-semibold mb-4">Featured Games</h2>
-                <div id="games-grid" class="grid gap-6 sm:grid-cols-2 lg:grid-cols-5"></div> <!-- Changed to 5 columns -->
+                <div id="games-grid" class="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+                    <!-- Game cards -->
+                </div>
             </section>
 
-            <!-- Multiplayer -->
+            <!-- Multiplayer Games -->
             <section id="multiplayer-games" class="mb-8">
                 <h2 class="text-2xl font-semibold mb-4">Multiplayer Games</h2>
-                <div id="multiplayer-carousel" class="carousel-container">
-                    <div class="carousel"></div>
+                <div id="multiplayer-carousel" class="carousel-container overflow-hidden">
+                    <div class="carousel flex space-x-4">
+                        <!-- Carousel items  -->
+                    </div>
                 </div>
             </section>
 
-            <!-- PlayStation 5 -->
+            <!-- PS5 Games -->
             <section id="ps5-games" class="mb-8">
                 <h2 class="text-2xl font-semibold mb-4">PlayStation 5 Games</h2>
-                <div id="ps5-carousel" class="carousel-container">
-                    <div class="carousel"></div>
+                <div id="ps5-carousel" class="carousel-container overflow-hidden">
+                    <div class="carousel flex space-x-4">
+                        <!-- Carousel items  -->
+                    </div>
                 </div>
             </section>
 
-            <!-- Action Games  -->
+            <!-- Action Games -->
             <section id="action-games" class="mb-8">
                 <h2 class="text-2xl font-semibold mb-4">Action Games</h2>
-                <div id="action-carousel" class="carousel-container">
-                    <div class="carousel"></div>
+                <div id="action-carousel" class="carousel-container overflow-hidden">
+                    <div class="carousel flex space-x-4">
+                        <!-- Carousel items-->
+                    </div>
                 </div>
             </section>
         </div>
@@ -54,11 +86,13 @@
         <p>&#128511; Game Explorer | RAWG API</p>
     </footer>
 
-    <div id="game-modal" class="modal">
-        <div class="modal-content">
-            <button class="close-button" onclick="closeModal()">Close</button><br>
-            <div id="modal-details"></div>
+    <!-- Game Cards -->
+    <div id="game-modal" class="modal fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50">
+        <div class="modal-content bg-gray-900 p-6 rounded-lg max-w-md w-full">
+            <button class="close-button text-white" onclick="closeModal()">Close</button><br>
+            <div id="modal-details" class="text-white"></div>
         </div>
     </div>
+
 </body>
 </html>

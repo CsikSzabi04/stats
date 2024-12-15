@@ -10,7 +10,7 @@ const searchInput = document.getElementById("search-input");
 
 async function fetchFeaturedGames() {
     try {
-        const response = await fetch(`${API_URL}?key=${API_KEY}&page_size=15`);  
+        const response = await fetch(`${API_URL}?key=${API_KEY}&page_size=15`);
         if (!response.ok) throw new Error("Failed to fetch games");
 
         const data = await response.json();
@@ -33,9 +33,13 @@ function displayFeaturedGames(filteredGames = allGames) {
         gameCard.innerHTML = ` 
             <img src="${game.background_image}" alt="${game.name}" class="game-image">
             <div class="game-details">
+                <div>
                 <h3 class="text-lg font-bold mb-2 truncate">${game.name}</h3>
                 <p class="text-sm text-gray-400">Released: ${game.released || "N/A"}</p>
                 <p class="text-sm text-gray-400">Rating: ${game.rating || "N/A"}/5</p>
+                </div>
+                <div class="left"> <button class="add-to-wishlist" onclick="toggleStar(event, '${game.name}')"> <span id="star-${game.name}" class="star">&#9734;</span> </button></div>
+                
             </div>
         `;
         gamesGrid.appendChild(gameCard);
@@ -43,16 +47,15 @@ function displayFeaturedGames(filteredGames = allGames) {
 }
 
 function displayFilteredGames() {
-    const multiplayerGames = allGames.filter(game => game.tags && game.tags.some(tag => tag.name.toLowerCase().includes('multiplayer'))); 
+    const multiplayerGames = allGames.filter(game => game.tags && game.tags.some(tag => tag.name.toLowerCase().includes('multiplayer')));
     const actionGames = allGames.filter(game => game.genres && game.genres.some(genre => genre.name.toLowerCase().includes('action')));
 
     // PS5 games
     fetchPS5Games();
 
-    createCarousel(multiplayerGames, multiplayerCarousel);  
-    createCarousel(actionGames, actionCarousel);              
+    createCarousel(multiplayerGames, multiplayerCarousel);
+    createCarousel(actionGames, actionCarousel);
 
-  
     setTimeout(() => {
         createCarousel(actionGames, actionCarousel);          // Delay one sec
     }, 100);
@@ -75,10 +78,10 @@ function createCarousel(games, carouselElement) {
     const carousel = carouselElement.querySelector('.carousel');
     carousel.innerHTML = '';
     const totalItems = games.length;
-    
+
     // Loop
     const gamesToShow = [...games, ...games];
-    
+
     gamesToShow.forEach(game => {
         const gameCard = document.createElement("div");
         gameCard.className = "game-card carousel-item";
@@ -108,10 +111,10 @@ function rotateCarousel(carousel) {
     setInterval(() => {
         currentIndex = (currentIndex + 1) % totalItems;
         gsap.to(carousel, {
-            x: -currentIndex * 240, 
-            duration: 1.5,           
-            ease: "power2.inOut",   
-            overwrite: true          
+            x: -currentIndex * 240,
+            duration: 1.5,
+            ease: "power2.inOut",
+            overwrite: true
         });
     }, intervalTime); // Rotate every 3 seconds
 }
@@ -121,11 +124,11 @@ async function showGameDetails(game) {
     const modalDetails = document.getElementById("modal-details");
     modal.classList.add("show");
 
-    const requirements = game.platforms && game.platforms.length > 0 
+    const requirements = game.platforms && game.platforms.length > 0
         ? game.platforms.map(platform => {
             const requirements = platform.requirements_en || {};
             return requirements.minimum ? `<li>${platform.platform.name}: ${requirements.minimum}</li>` : null;
-          }).filter(Boolean).join("")
+        }).filter(Boolean).join("")
         : "<li>N/A</li>";
 
     modalDetails.innerHTML = ` 
@@ -166,7 +169,7 @@ function closeModal() {
     modalDetails.innerHTML = "";
 }
 
-function Refresh(){
+function Refresh() {
     location.reload();
 }
 
@@ -176,29 +179,100 @@ function handleSearch() {
     const filteredGames = allGames.filter(game =>
         game.name.toLowerCase().includes(searchQuery)
     );
-    displayFeaturedGames(filteredGames); 
+    displayFeaturedGames(filteredGames);
 
 }
 document.getElementById("search-input").addEventListener("input", handleSearch);
 
-
 searchInput.addEventListener("input", async (event) => {
-const query = event.target.value.trim();
-if (query.length > 2) {
-    try {
-    const response = await fetch(`${API_URL}?key=${API_KEY}&search=${query}&page_size=8`);
-    if (!response.ok) throw new Error("Failed to fetch search results");
+    const query = event.target.value.trim();
+    if (query.length > 2) {
+        try {
+            const response = await fetch(`${API_URL}?key=${API_KEY}&search=${query}&page_size=8`);
+            if (!response.ok) throw new Error("Failed to fetch search results");
 
-    const data = await response.json();
-    allGames = data.results;
-    displayFeaturedGames(allGames); 
-    } catch (error) {
-    console.error("Error searching games:", error);
+            const data = await response.json();
+            allGames = data.results;
+            displayFeaturedGames(allGames);
+        } catch (error) {
+            console.error("Error searching games:", error);
+        }
+    } else if (query == "") {
+        fetchFeaturedGames();
     }
-} else if (query == "") {
-    fetchFeaturedGames();
-}
 });
 
+// add
+
+let wishlist = [];
+const wishlistDiv = document.getElementById("wishlist"); 
+const wishlistModal = document.getElementById("wishlist-modal");
+const toggleWishlistButton = document.getElementById("toggle-wishlist");
+const closeWishlistButton = document.getElementById("close-wishlist");
+
+// Fav
+function updateWishlist() {
+    wishlistDiv.innerHTML = "";  // Clear current list
+    if (wishlist.length === 0) {
+        wishlistDiv.innerHTML = "<p>Your wishlist is empty.</p>";
+    } else {
+        wishlist.forEach((game, index) => {
+            const wishlistItem = document.createElement("div");
+            wishlistItem.className = "wishlist-item p-2 rounded-lg bg-gray-700 hover:bg-gray-600 cursor-pointer";
+            wishlistItem.innerText = game;
+
+            const deleteButton = document.createElement("button");
+            deleteButton.innerText = "Delete";
+            deleteButton.className = "delete-button float-right text-red-500 font-bold ml-4 cursor-pointer";
+            deleteButton.onclick = (event) => {
+                event.stopPropagation();
+                deleteFromWishlist(index);
+            };
+
+            wishlistItem.appendChild(deleteButton);
+
+            wishlistItem.onclick = () => showWishlistGameDetails(game);
+            wishlistDiv.appendChild(wishlistItem);
+        });
+    }
+}
+
+function deleteFromWishlist(index) {
+    wishlist.splice(index, 1);
+    updateWishlist();
+}
+
+// Toggle star
+function toggleStar(event, gameName) {
+    event.stopPropagation();
+    const starElement = event.target;
+    const isFilled = starElement.innerHTML === "&#9733;"; // Check if the star is filled
+
+    if (isFilled) {
+        starElement.innerHTML = "&#9734;"; // Empty star
+        wishlist = wishlist.filter(game => game !== gameName); // Remove from wishlist
+    } else {
+        starElement.innerHTML = "&#9733;"; // Filled star
+        if (!wishlist.includes(gameName)) {
+            wishlist.push(gameName); // Add to wishlist
+        }
+    }
+    updateWishlist(); // Update the wishlist display
+}
+
+function showWishlistGameDetails(gameName) {
+    const game = allGames.find(g => g.name === gameName);
+    if (game) {
+        showGameDetails(game);
+    }
+}
+
+function toggleWishlistModal() {
+    wishlistModal.classList.toggle("hidden");
+}
+
+toggleWishlistButton.addEventListener("click", toggleWishlistModal);
+
+closeWishlistButton.addEventListener("click", toggleWishlistModal);
 
 fetchFeaturedGames();
