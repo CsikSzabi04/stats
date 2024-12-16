@@ -30,16 +30,17 @@ function displayFeaturedGames(filteredGames = allGames) {
             "game-card hover:shadow-xl hover:scale-105 transition transform cursor-pointer";
         gameCard.onclick = () => showGameDetails(game);
 
+
         gameCard.innerHTML = ` 
             <img src="${game.background_image}" alt="${game.name}" class="game-image">
             <div class="game-details">
-                <div>
+                <div> 
                 <h3 class="text-lg font-bold mb-2 truncate">${game.name}</h3>
                 <p class="text-sm text-gray-400">Released: ${game.released || "N/A"}</p>
                 <p class="text-sm text-gray-400">Rating: ${game.rating || "N/A"}/5</p>
                 </div>
                 <div class="left"> <button class="add-to-wishlist" onclick="toggleStar(event, '${game.name}')"> <span id="star-${game.name}" class="star">&#9734;</span> </button></div>
-                
+            
             </div>
         `;
         gamesGrid.appendChild(gameCard);
@@ -88,13 +89,13 @@ function createCarousel(games, carouselElement) {
         gameCard.onclick = () => showGameDetails(game);
 
         gameCard.innerHTML = `
-            <img src="${game.background_image}" alt="${game.name}" class="game-image">
-            <div class="game-details">
-                <h3 class="text-lg font-bold mb-2">${game.name}</h3>
-                <p class="text-sm text-gray-400">Released: ${game.released || "N/A"}</p>
-                <p class="text-sm text-gray-400">Rating: ${game.rating || "N/A"}/5</p>
-            </div>
-        `;
+    <img src="${game.background_image}" alt="${game.name}" class="game-image">
+    <div class="game-details">
+        <h3 class="text-lg font-bold mb-2">${game.name}</h3>
+        <p class="text-sm text-gray-400">Released: ${game.released || "N/A"}</p>
+        <p class="text-sm text-gray-400">Rating: ${game.rating || "N/A"}/5</p>
+    </div>
+`;
         carousel.appendChild(gameCard);
     });
 
@@ -139,15 +140,15 @@ async function showGameDetails(game) {
         <p><strong>Stores:</strong> ${game.stores ? game.stores.map(store => store.store.name).join(", ") : "N/A"}</p>
         <p><strong>Platforms:</strong> ${game.platforms ? game.platforms.map(p => p.platform.name).join(", ") : "N/A"}</p>
         <div class="row"> <p><strong>Genres:</strong> <div id="tag"> ${game.tags ? game.tags.map(g => g.name).join(", ") : "N/A"}</div></p></div>
-          <div class="collapsible">
-          <div class="collapsible-header" onclick="toggleRequirements(this)">
+        <div class="collapsible">
+        <div class="collapsible-header" onclick="toggleRequirements(this)">
             <strong>Minimum Requirements</strong> <span class="arrow">&#x25BC;</span>
-          </div>
-          <ul class="collapsible-content hidden scrollable-requirements">
-            ${requirements}
-          </ul>
         </div>
-        `;
+        <ul class="collapsible-content hidden scrollable-requirements">
+        ${requirements}
+    </ul>
+    </div>
+    `;
 }
 
 function toggleRequirements(header) {
@@ -205,7 +206,7 @@ searchInput.addEventListener("input", async (event) => {
 // add
 
 let wishlist = [];
-const wishlistDiv = document.getElementById("wishlist"); 
+const wishlistDiv = document.getElementById("wishlist");
 const wishlistModal = document.getElementById("wishlist-modal");
 const toggleWishlistButton = document.getElementById("toggle-wishlist");
 const closeWishlistButton = document.getElementById("close-wishlist");
@@ -246,7 +247,7 @@ function deleteFromWishlist(index) {
 function toggleStar(event, gameName) {
     event.stopPropagation();
     const starElement = event.target;
-    const isFilled = starElement.innerHTML === "&#9733;"; // Check if the star is filled
+    const isFilled = starElement.innerHTML === "&#9733;";
 
     if (isFilled) {
         starElement.innerHTML = "&#9734;"; // Empty star
@@ -257,7 +258,7 @@ function toggleStar(event, gameName) {
             wishlist.push(gameName); // Add to wishlist
         }
     }
-    updateWishlist(); // Update the wishlist display
+    updateWishlist(); // Update the wishlist 
 }
 
 function showWishlistGameDetails(gameName) {
@@ -274,5 +275,130 @@ function toggleWishlistModal() {
 toggleWishlistButton.addEventListener("click", toggleWishlistModal);
 
 closeWishlistButton.addEventListener("click", toggleWishlistModal);
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    const storesGrid = document.getElementById("stores-grid");
+    const gameSearchInput = document.getElementById("search-input");
+    const gameSearchBtn = document.getElementById("game-search-btn");
+    const gameResults = document.getElementById("games-grid-prices");
+    const priceSlider = document.getElementById("price-slider");
+    const sliderValue = document.getElementById("slider-value");
+
+    const allowedStores = [
+        "Steam",
+        "GamersGate",
+        "Epic Games Store",
+        "Gog",
+        "Origin",
+        "Direct2Drive"
+    ];
+
+    async function fetchStores() {
+        try {
+            const response = await fetch("https://www.cheapshark.com/api/1.0/stores");
+            const stores = await response.json();
+            stores
+                .filter(store => allowedStores.includes(store.storeName)) // Filter allowed stores
+                .forEach(store => {
+                    const storeCard = document.createElement("div");
+                    storeCard.classList.add("store-card");
+                    storeCard.innerHTML = `
+                <img src="https://www.cheapshark.com${store.images.logo}" alt="${store.storeName}" class="w-full h-auto rounded-md mb-2">
+                <h3 class="text-lg font-semibold text-center">${store.storeName}</h3>
+            `;
+                    storesGrid.appendChild(storeCard);
+                });
+        } catch (error) {
+            console.error("Error fetching stores:", error);
+        }
+    }
+
+    async function searchGames(query, maxPrice) {
+        try {
+            const response = await fetch(`https://www.cheapshark.com/api/1.0/games?title=${query}`);
+            const games = await response.json();
+            gameResults.innerHTML = ""; // Clear previous results
+
+            const pricesSection = document.createElement("div");
+            pricesSection.classList.add("prices-section");
+
+            const lineBreak = document.createElement("br");
+            pricesSection.appendChild(lineBreak);
+
+            const pricesTitle = document.createElement("h2");
+            pricesTitle.classList.add("text-2xl", "font-semibold", "mb-4");
+            pricesTitle.textContent = "Prices:";
+            pricesSection.appendChild(pricesTitle);
+
+            if (games.length === 0) {
+                gameResults.innerHTML = `
+            <h2>Prices:</h2> <br>
+            <p>Unfortunately, I can't find this game! <br> Sorry for the inconvenience...</p>
+        `;
+                return;
+            }
+
+            const pricesGrid = document.createElement("div");
+            pricesGrid.classList.add("grid", "gap-6", "prices-grid");
+
+            const filteredGames = games.filter(game => {
+                return parseFloat(game.cheapest) <= parseFloat(maxPrice);
+            });
+
+            filteredGames.forEach(game => {
+                const gameCard = document.createElement("div");
+                gameCard.classList.add("game-card");
+
+                const gameImage = game.thumb ? game.thumb : `https://via.placeholder.com/200x250?text=${encodeURIComponent(game.external)}`;
+                gameCard.innerHTML = `
+            <div class="belso">
+                <img src="${gameImage}" alt="${game.external}" class="w-full h-auto rounded-md mb-2">
+                <h3 class="text-xl font-bold mb-2">${game.external}</h3>
+                <p class="price">Best Price: $${game.cheapest}</p>
+                <a href="https://www.cheapshark.com/redirect?dealID=${game.cheapestDealID}" target="_blank" class="text-blue-500 underline">View Deal</a>
+            </div>
+        `;
+
+                pricesGrid.appendChild(gameCard);
+            });
+
+            pricesSection.appendChild(pricesGrid);
+            gameResults.appendChild(pricesSection);
+
+        } catch (error) {
+            console.error("Error fetching games:", error);
+        }
+    }
+
+
+    priceSlider.addEventListener("input", (event) => {
+        const maxPrice = event.target.value;
+        sliderValue.textContent = maxPrice;
+        const query = gameSearchInput.value.trim();
+        if (query.length > 2) {
+            searchGames(query, maxPrice);
+        }
+    });
+
+
+    gameSearchInput.addEventListener("input", async (event) => {
+        const query = event.target.value.trim();
+        const maxPrice = priceSlider.value;
+        if (query.length > 2) {
+            searchGames(query, maxPrice);
+        } else {
+            gameResults.innerHTML = '';
+        }
+    });
+
+    // Initialize
+    fetchStores();
+});
+
+
+
+
+
 
 fetchFeaturedGames();

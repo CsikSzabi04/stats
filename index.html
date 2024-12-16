@@ -1,27 +1,21 @@
-<!DOCTYPE html>
-<html lang="hu">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Explorer</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="index.js" defer></script>
-    <link rel="stylesheet" href="index.css">
-</head>
-
 <body class="bg-gray-900 text-white font-sans">
     <!-- Header -->
     <header class="p-4 bg-gray-800 flex justify-between items-center flex-wrap">
         <h1 class="text-3xl font-bold cursor-pointer" onclick="Refresh()">Game Explorer</h1>
-        
+
         <div class="flex items-center space-x-4 mt-2 sm:mt-0">
-            
-            <button id="toggle-wishlist" class="bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 hover:from-blue-700 hover:via-blue-600 hover:to-blue-700 text-white font-semibold py-2 px-4 rounded-md shadow-lg hover:shadow-xl transition duration-300 ease-in-out">
+
+            <button id="toggle-wishlist"
+                class="bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 hover:from-blue-700 hover:via-blue-600 hover:to-blue-700 text-white font-semibold py-2 px-4 rounded-md shadow-lg hover:shadow-xl transition duration-300 ease-in-out">
                 Your Favourites
             </button>
-
-            <input id="search-input" class="p-2 rounded-lg text-black w-full sm:w-64" type="text" placeholder="Search games...">
+            <div id="slider-container">
+                <label for="price-slider">Max Price ($): </label>
+                <input type="range" id="price-slider" min="0" max="100" value="30" step="1">
+                <span id="slider-value">30</span> <!-- Display the selected price -->
+            </div>
+            <input id="search-input" class="p-2 rounded-lg text-black w-full sm:w-64" type="text"
+                placeholder="Search games...">
 
         </div>
     </header>
@@ -30,7 +24,8 @@
         <div class="container mx-auto p-4">
 
             <!-- Wishlist  -->
-            <div id="wishlist-modal" class="wishlist-modal hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+            <div id="wishlist-modal"
+                class="wishlist-modal hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
                 <div class="wishlist-content bg-gray-900 p-6 rounded-lg max-w-md w-full">
                     <div class="flex justify-between items-center">
                         <h2 class="text-xl font-bold">Your Wishlist</h2>
@@ -47,6 +42,9 @@
                 <h2 class="text-2xl font-semibold mb-4">Featured Games</h2>
                 <div id="games-grid" class="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                     <!-- Game cards -->
+                </div>
+                <div id="games-grid-prices" class="">
+                    <!-- Game cards prices-->
                 </div>
             </section>
 
@@ -79,7 +77,25 @@
                     </div>
                 </div>
             </section>
+
+            <div class="api-section container mx-auto p-4">
+                <section id="stores-section" class="mb-8">
+                    <h2 class="text-2xl font-semibold mb-4">Game Stores: </h2>
+                    <div id="stores-grid"
+                        class="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+                        <!-- Dynamic store content -->
+                    </div>
+                </section>
+
+                <section id="game-search-section" class="mb-8">
+
+            </div>
+            <div id="game-results" class="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                <!-- Game results will appear here -->
+            </div>
+            </section>
         </div>
+    </div>
     </div>
 
     <footer class="p-4 bg-gray-800 text-center">

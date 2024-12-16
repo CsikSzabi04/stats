@@ -146,7 +146,6 @@ footer {
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.3s ease;
-
     padding-top: 5%;
     padding-bottom: 5%;
     overflow-y: auto;
@@ -154,7 +153,9 @@ footer {
     scroll-snap-type: none;
 }
 
-.modal::-webkit-scrollbar{display: none;}
+.modal::-webkit-scrollbar {
+    display: none;
+}
 
 .modal.show {
     opacity: 1;
@@ -238,10 +239,6 @@ footer {
 }
 
 
-
-
-
-
 #toggle-wishlist {
     font-size: 16px;
     padding: 8px 16px;
@@ -321,4 +318,99 @@ footer {
     color: gold;
 }
 
-.row{ width: 100%; display: flex;}
+.row {
+    width: 100%;
+    display: flex;
+}
+
+/* Game Stores Section */
+#stores-section {
+    margin-bottom: 40px;
+}
+
+.store-card {
+    background-color: #1e1e1e;
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease;
+}
+
+.store-card img {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 8px;
+    border-radius: 50%;
+}
+
+.store-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+}
+
+
+#game-search-section {
+    margin-bottom: 40px;
+}
+
+.game-card {
+    background-color: #222;
+    padding: 16px;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.game-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 6px;
+    margin-bottom: 12px;
+}
+
+.game-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+}
+
+.game-card .price {
+    font-size: 1rem;
+    color: #1e88e5;
+}
+
+.prices-section {
+    margin-top: 20px;
+    padding: 10px;
+}
+
+.prices-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+}
+
+.game-card:hover {
+    transform: scale(1.05);
+}
+
+
+.game-card h3 {
+    font-size: 1.1rem;
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+.game-card .price {
+    color: #66bb6a;
+    margin-bottom: 10px;
+}
+
+.game-card a {
+    color: #1e88e5;
+    text-decoration: underline;
+}
+
+.game-card a:hover {
+    color: #1565c0;
+}
