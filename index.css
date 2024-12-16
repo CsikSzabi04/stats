@@ -238,19 +238,10 @@ footer {
     margin-bottom: 1%;
 }
 
-
-#toggle-wishlist {
-    font-size: 16px;
-    padding: 8px 16px;
-    border: none;
-    cursor: pointer;
-    background-color: #444;
-    color: white;
-    border-radius: 5px;
-}
+#toggle-wishlist{background-color: #44444400; font-size: 20px;}
 
 #toggle-wishlist:hover {
-    background-color: #555;
+    background-color: #55555500;
 }
 
 /* Wishlist modal styles */
@@ -414,3 +405,52 @@ footer {
 .game-card a:hover {
     color: #1565c0;
 }
+
+.navbar {
+    display: inline-flex;
+        padding: 10px;
+        justify-content: center;
+    }
+
+    .nav-button {
+        color: white; 
+        padding: 10px 20px;
+       
+        margin: 0 5px;
+        border: none;
+        cursor: pointer;
+        font-size: 20px;
+        font-weight: bold;
+        position: relative;
+    }
+
+
+    .dropdown {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background-color: white;
+        border: 1px solid #ccc;
+        width: 200px;
+        z-index: 1000;
+        max-height: 300px; 
+        min-height: 100px; 
+        overflow-y: auto; 
+    }
+
+
+    .dropdown a {
+        display: block;
+        padding: 10px;
+        color: black;
+        text-decoration: none;
+    }
+
+    .dropdown a:hover {
+        background-color: #f0f0f0;
+    }
+
+    .nav-button:hover .dropdown {
+        display: block;
+    }

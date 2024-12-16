@@ -133,22 +133,22 @@ async function showGameDetails(game) {
         : "<li>N/A</li>";
 
     modalDetails.innerHTML = ` 
-        <img src="${game.background_image}" alt="${game.name}" class="rounded-lg mb-4 w-full object-cover">
-        <h2 class="text-3xl font-bold mb-4">${game.name}</h2>
-        <p><strong>Release Date:</strong> ${game.released || "N/A"}</p>
-        <p><strong>Rating:</strong> ${game.rating || "N/A"}/5</p>
-        <p><strong>Stores:</strong> ${game.stores ? game.stores.map(store => store.store.name).join(", ") : "N/A"}</p>
-        <p><strong>Platforms:</strong> ${game.platforms ? game.platforms.map(p => p.platform.name).join(", ") : "N/A"}</p>
-        <div class="row"> <p><strong>Genres:</strong> <div id="tag"> ${game.tags ? game.tags.map(g => g.name).join(", ") : "N/A"}</div></p></div>
-        <div class="collapsible">
-        <div class="collapsible-header" onclick="toggleRequirements(this)">
-            <strong>Minimum Requirements</strong> <span class="arrow">&#x25BC;</span>
-        </div>
-        <ul class="collapsible-content hidden scrollable-requirements">
-        ${requirements}
-    </ul>
-    </div>
-    `;
+<img src="${game.background_image}" alt="${game.name}" class="rounded-lg mb-4 w-full object-cover">
+<h2 class="text-3xl font-bold mb-4">${game.name}</h2>
+<p><strong>Release Date:</strong> ${game.released || "N/A"}</p>
+<p><strong>Rating:</strong> ${game.rating || "N/A"}/5</p>
+<p><strong>Stores:</strong> ${game.stores ? game.stores.map(store => store.store.name).join(", ") : "N/A"}</p>
+<p><strong>Platforms:</strong> ${game.platforms ? game.platforms.map(p => p.platform.name).join(", ") : "N/A"}</p>
+<div class="row"> <p><strong>Genres:</strong> <div id="tag"> ${game.tags ? game.tags.map(g => g.name).join(", ") : "N/A"}</div></p></div>
+  <div class="collapsible">
+  <div class="collapsible-header" onclick="toggleRequirements(this)">
+    <strong>Minimum Requirements</strong> <span class="arrow">&#x25BC;</span>
+  </div>
+  <ul class="collapsible-content hidden scrollable-requirements">
+    ${requirements}
+  </ul>
+</div>
+`;
 }
 
 function toggleRequirements(header) {
@@ -247,7 +247,7 @@ function deleteFromWishlist(index) {
 function toggleStar(event, gameName) {
     event.stopPropagation();
     const starElement = event.target;
-    const isFilled = starElement.innerHTML === "&#9733;";
+    const isFilled = starElement.innerHTML === "&#9733;"; // Check if the star is filled
 
     if (isFilled) {
         starElement.innerHTML = "&#9734;"; // Empty star
@@ -255,7 +255,7 @@ function toggleStar(event, gameName) {
     } else {
         starElement.innerHTML = "&#9733;"; // Filled star
         if (!wishlist.includes(gameName)) {
-            wishlist.push(gameName); // Add to wishlist
+            wishlist.push(gameName); 
         }
     }
     updateWishlist(); // Update the wishlist 
@@ -326,6 +326,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const lineBreak = document.createElement("br");
             pricesSection.appendChild(lineBreak);
 
+            // Add the title "Prices:"
             const pricesTitle = document.createElement("h2");
             pricesTitle.classList.add("text-2xl", "font-semibold", "mb-4");
             pricesTitle.textContent = "Prices:";
@@ -352,12 +353,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 const gameImage = game.thumb ? game.thumb : `https://via.placeholder.com/200x250?text=${encodeURIComponent(game.external)}`;
                 gameCard.innerHTML = `
-            <div class="belso">
+           
                 <img src="${gameImage}" alt="${game.external}" class="w-full h-auto rounded-md mb-2">
                 <h3 class="text-xl font-bold mb-2">${game.external}</h3>
                 <p class="price">Best Price: $${game.cheapest}</p>
                 <a href="https://www.cheapshark.com/redirect?dealID=${game.cheapestDealID}" target="_blank" class="text-blue-500 underline">View Deal</a>
-            </div>
+            
         `;
 
                 pricesGrid.appendChild(gameCard);
@@ -373,22 +374,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     priceSlider.addEventListener("input", (event) => {
-        const maxPrice = event.target.value;
-        sliderValue.textContent = maxPrice;
+        const maxPrice = event.target.value;  
+        sliderValue.textContent = maxPrice;  
         const query = gameSearchInput.value.trim();
         if (query.length > 2) {
-            searchGames(query, maxPrice);
+            searchGames(query, maxPrice);  
         }
     });
 
-
+   
     gameSearchInput.addEventListener("input", async (event) => {
         const query = event.target.value.trim();
-        const maxPrice = priceSlider.value;
+        const maxPrice = priceSlider.value;  
         if (query.length > 2) {
-            searchGames(query, maxPrice);
+            searchGames(query, maxPrice);  
         } else {
-            gameResults.innerHTML = '';
+            gameResults.innerHTML = '';  
         }
     });
 
@@ -396,9 +397,44 @@ document.addEventListener("DOMContentLoaded", () => {
     fetchStores();
 });
 
+async function fetchStores() {
+    const response = await fetch('https://www.cheapshark.com/api/1.0/stores');
+    const stores = await response.json();
 
+    const dropdown = document.getElementById('stores-dropdown');
 
+    // Urls
+    stores.forEach(store => {
+        const link = document.createElement('a');
+        link.textContent = store.storeName;
 
+        if (store.storeName.toLowerCase() == 'steam') {
+            link.href = 'https://store.steampowered.com/';
+        } 
+        else if (store.storeName.toLowerCase() == 'getgamez') {
+            link.href = 'https://getgamez.net/';
+        } 
+        else if (store.storeName.toLowerCase() == 'playfield') {
+            link.href = 'https://www.playitstore.hu/';
+        } 
+        else if (store.storeName.toLowerCase() == 'imperial games') {
+            link.href = 'https://imperial.games/';
+        } 
+        else if (store.storeName.toLowerCase() == 'funstockdigital') {
+            link.href = 'https://funstock.eu';
+        } 
+        else if (store.storeName.toLowerCase() == 'razer game store') {
+            link.href = 'https://www.razer.com/eu-en/store';
+        } 
+        else {
+            link.href = `https://${store.storeName.toLowerCase().replace(/\s+/g, '')}.com`; 
+        }
 
+        link.target = '_blank'; 
+        dropdown.appendChild(link);
+    });
+}
+
+fetchStores();
 
 fetchFeaturedGames();
