@@ -349,20 +349,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
             filteredGames.forEach(game => {
                 const gameCard = document.createElement("div");
-                gameCard.classList.add("game-card");
+                gameCard.classList.add(     "game-card", 
+                    "w-full",                           
+                    "p-4",                    
+                    "flex", 
+                    "flex-col", 
+                    "items-center"   );
 
                 const gameImage = game.thumb ? game.thumb : `https://via.placeholder.com/200x250?text=${encodeURIComponent(game.external)}`;
                 gameCard.innerHTML = `
-           
-                <img src="${gameImage}" alt="${game.external}" class="w-full h-auto rounded-md mb-2">
-                <h3 class="text-xl font-bold mb-2">${game.external}</h3>
-                <p class="price">Best Price: $${game.cheapest}</p>
-                <a href="https://www.cheapshark.com/redirect?dealID=${game.cheapestDealID}" target="_blank" class="text-blue-500 underline">View Deal</a>
-            
-        `;
+                    <img src="${gameImage}" alt="${game.external}" class="game-image w-full h-auto rounded-md mb-2">
+                    <div class="game-details text-center sm:text-left">
+                        <h3 class="text-xl font-bold mb-2">${game.external}</h3>
+                        <p class="price">Best Price: $${game.cheapest}</p>
+                        <a href="https://www.cheapshark.com/redirect?dealID=${game.cheapestDealID}" target="_blank" class="text-blue-500 underline">View Deal</a>
+                    </div>
+                `;
 
                 pricesGrid.appendChild(gameCard);
             });
+
+            pricesGrid.classList.add( "grid",  "grid-cols-1",   "sm:grid-cols-2",   "md:grid-cols-3", "lg:grid-cols-5",  "gap-4"                );
 
             pricesSection.appendChild(pricesGrid);
             gameResults.appendChild(pricesSection);
