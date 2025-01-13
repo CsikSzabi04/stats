@@ -443,7 +443,7 @@ async function fetchStores() {
 }
 
 function openProfilePage() {
-    window.location.href = "login.html";
+    window.location.href = "https://csikszabi04githublogin.netlify.app/";
 }
 
 fetchStores();
