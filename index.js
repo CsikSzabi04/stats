@@ -1,36 +1,42 @@
+// API details: This is the URL and API key used to fetch game data from the RAWG API.
 const API_URL = "https://api.rawg.io/api/games";
 const API_KEY = "984255fceb114b05b5e746dc24a8520a";
 
-let allGames = [];
+let allGames = []; // Stores all fetched games
+
+// Get HTML elements where the game data will be displayed.
 const multiplayerCarousel = document.getElementById("multiplayer-carousel");
 const actionCarousel = document.getElementById("action-carousel");
 const ps5Carousel = document.getElementById("ps5-carousel");
 const gamesGrid = document.getElementById("games-grid");
 const searchInput = document.getElementById("search-input");
 
+
+// Fetch featured games from the API.
 async function fetchFeaturedGames() {
     try {
         const response = await fetch(`${API_URL}?key=${API_KEY}&page_size=15`);
         if (!response.ok) throw new Error("Failed to fetch games");
 
         const data = await response.json();
-        allGames = data.results;
+        allGames = data.results;  // Store fetched games
         displayFeaturedGames();
         displayFilteredGames();
     } catch (error) {
         console.error("Error fetching featured games:", error);
     }
 }
-
+// Displays featured games in the grid
 function displayFeaturedGames(filteredGames = allGames) {
     gamesGrid.innerHTML = "";
+    // Loop through each game and create a card for it.
     filteredGames.forEach((game) => {
         const gameCard = document.createElement("div");
         gameCard.className =
             "game-card hover:shadow-xl hover:scale-105 transition transform cursor-pointer";
-        gameCard.onclick = () => showGameDetails(game);
-
-
+        gameCard.onclick = () => showGameDetails(game); // Show details on click
+ 
+         // Set the game card's HTML.
         gameCard.innerHTML = ` 
             <img src="${game.background_image}" alt="${game.name}" class="game-image">
             <div class="game-details">
@@ -43,25 +49,27 @@ function displayFeaturedGames(filteredGames = allGames) {
             
             </div>
         `;
-        gamesGrid.appendChild(gameCard);
+        gamesGrid.appendChild(gameCard); //Ads gamecard to the grid
     });
 }
 
+// Categorizes and displays filtered games in carousels
 function displayFilteredGames() {
     const multiplayerGames = allGames.filter(game => game.tags && game.tags.some(tag => tag.name.toLowerCase().includes('multiplayer')));
     const actionGames = allGames.filter(game => game.genres && game.genres.some(genre => genre.name.toLowerCase().includes('action')));
 
-    // PS5 games
+    // Fetch PS5 games separately
     fetchPS5Games();
 
     createCarousel(multiplayerGames, multiplayerCarousel);
     createCarousel(actionGames, actionCarousel);
 
     setTimeout(() => {
-        createCarousel(actionGames, actionCarousel);          // Delay one sec
+        createCarousel(actionGames, actionCarousel);     // Delay to prevent glitches
     }, 100);
 }
 
+// Fetches and displays PS5 games from the API in the carousel 
 async function fetchPS5Games() {
     try {
         const response = await fetch(`${API_URL}?key=${API_KEY}&page_size=8&platforms=18`);
@@ -75,12 +83,13 @@ async function fetchPS5Games() {
     }
 }
 
+// Creates and populates a game carousel
 function createCarousel(games, carouselElement) {
     const carousel = carouselElement.querySelector('.carousel');
     carousel.innerHTML = '';
     const totalItems = games.length;
 
-    // Loop
+    // Loop & Duplicate games for smooth scrolling
     const gamesToShow = [...games, ...games];
 
     gamesToShow.forEach(game => {
@@ -102,6 +111,8 @@ function createCarousel(games, carouselElement) {
     rotateCarousel(carousel);
 }
 
+
+// Rotates the carousel at intervals automatically
 function rotateCarousel(carousel) {
     const totalItems = carousel.children.length;
     let currentIndex = 0;
@@ -120,11 +131,13 @@ function rotateCarousel(carousel) {
     }, intervalTime); // Rotate every 3 seconds
 }
 
+// Allows Displays game details in a modal
 async function showGameDetails(game) {
     const modal = document.getElementById("game-modal");
     const modalDetails = document.getElementById("modal-details");
     modal.classList.add("show");
 
+     // Formats game requirements
     const requirements = game.platforms && game.platforms.length > 0
         ? game.platforms.map(platform => {
             const requirements = platform.requirements_en || {};
@@ -151,6 +164,7 @@ async function showGameDetails(game) {
 `;
 }
 
+// Toggles visibility of game requirements
 function toggleRequirements(header) {
     const content = header.nextElementSibling;
     const arrow = header.querySelector('.arrow');
@@ -163,6 +177,7 @@ function toggleRequirements(header) {
     }
 }
 
+// Closes the modal
 function closeModal() {
     const modal = document.getElementById("game-modal");
     modal.classList.remove("show");
@@ -170,6 +185,7 @@ function closeModal() {
     modalDetails.innerHTML = "";
 }
 
+// Refreshes the page
 function Refresh() {
     location.reload();
 }
@@ -185,6 +201,7 @@ function handleSearch() {
 }
 document.getElementById("search-input").addEventListener("input", handleSearch);
 
+// for the search 
 searchInput.addEventListener("input", async (event) => {
     const query = event.target.value.trim();
     if (query.length > 2) {
@@ -277,6 +294,10 @@ toggleWishlistButton.addEventListener("click", toggleWishlistModal);
 closeWishlistButton.addEventListener("click", toggleWishlistModal);
 
 
+const priceSlider = document.getElementById("price-slider");
+const sliderValue = document.getElementById("slider-value");
+
+//At the stores it allows to click on them and redirects to their page
 document.addEventListener("DOMContentLoaded", () => {
     const storesGrid = document.getElementById("stores-grid");
     const gameSearchInput = document.getElementById("search-input");
@@ -390,13 +411,23 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
    
-    gameSearchInput.addEventListener("input", async (event) => {
+    
+    // Initially disable the price slider
+    priceSlider.disabled = true;
+    priceSlider.style.opacity = "0.5";  // Visually indicate it's disabled
+    
+    searchInput.addEventListener("input", async (event) => {
         const query = event.target.value.trim();
-        const maxPrice = priceSlider.value;  
-        if (query.length > 2) {
-            searchGames(query, maxPrice);  
+        const maxPrice = priceSlider.value;
+    
+        if (query.length > 1) {
+            priceSlider.disabled = false;
+            priceSlider.style.opacity = "1"; // Enable and make it fully visible
+            searchGames(query, maxPrice);
         } else {
-            gameResults.innerHTML = '';  
+            priceSlider.disabled = true;
+            priceSlider.style.opacity = "0.5"; // Disable and make it appear inactive
+            gameResults.innerHTML = '';  // Clear results
         }
     });
 
@@ -446,6 +477,8 @@ function openProfilePage() {
     window.location.href = "https://csikszabi04githublogin.netlify.app/";
 }
 
-fetchStores();
 
+
+fetchStores();
+//Page load and after fetches games
 fetchFeaturedGames();

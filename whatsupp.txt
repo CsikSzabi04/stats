@@ -1,0 +1,34 @@
+Eddigiek:
+	
+	A link az eddigi projekthez: https://csikszabi04.github.io/stats/
+	A link a githubhoz: https://github.com/CsikSzabi04/stats
+
+	Egy kis react, a login-t mivel Bársonynál így csináltuk így loptam be:
+		(a profilra nyomva tudjátok megnyitni de ide is teszem: https://csikszabi04githublogin.netlify.app/)
+
+		https://github.com/CsikSzabi04/login
+	
+	Ide írjátok majd le a githubos neveteket hogy megtudjalak majd hívni: 
+		Github Furfang: 	
+		Github Bence:
+	Meg melléjük a firebases username-t vagy emailt is mert oda is kell hogy collaboljunk			
+		Firebase Furfang:
+		Firebase Bence:
+
+	A Loginos részt gondolom értitek mert azt órán csináltuk
+	
+	Amit az oldal tud, API-val lehív külön oldalakról gameket, és a hozzá tartozó adatokat
+	Amit ha rányomunk egy card popul lesz látható több adattal
+	Van egy wishlist
+	Van searchbar + price slide (mindkettő működik max szépíteni lehet)
+	A profil eddig csak bejelentkezik a firebaseba elmenti, de még nem hívja le és nem tudjuk elérni a főoldalon
+	Amint azt megoldjuk, ha bejelentkezett vagy regisztrált a felhasználó, valahol majd meg kell jelenjen a felhasználó neve zölddel
+	Ezek mellett mindig menteni fogja majd, a whislistet és a "3"as számnál lesz majd a "cart" ahova majd lehet tenni gameket és kiszáloja mennyibe is kerülne ha megakarjuk venni
+	Ezeket a profilba menti és ha bejelentkezünk akkor meg is jelennek minden amit elmentettünk
+	Még olyat tud hogy felsorolja a gamestorokat ahonnan lehívunk, és el is visz az oldalukra
+	csak egy html egy css és egy js van a mainre, a loginhoz egy whole ass react vite project tartozik mind publicalva
+
+	További ötleteket majd adjatok: 
+
+	Ötletek: nem csak price searchbar lenne, hanem külön buttons amik pl price, ratings, release date
+		 egy searchbar amibe ha beríunk külön kulcsszavakat akkor olyanokat ad ki, pl multiplayer, shootings, singleplayer, stb 
